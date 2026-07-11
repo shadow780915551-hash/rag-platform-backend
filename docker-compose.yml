@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: rag_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rag_platform
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rag_network
+
+  # Redis for Celery
+  redis:
+    image: redis:7-alpine
+    container_name: rag_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rag_network
+
+  # FastAPI Application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_api
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rag_platform
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here-change-in-production}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - rag_network
+    restart: unless-stopped
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_celery_worker
+    command: celery -A app.services.background_tasks worker --loglevel=info --concurrency=2
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rag_platform
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here-change-in-production}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - rag_network
+    restart: unless-stopped
+
+  # Celery Beat (for scheduled tasks)
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_celery_beat
+    command: celery -A app.services.background_tasks beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rag_platform
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here-change-in-production}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - rag_network
+    restart: unless-stopped
+
+  # Flower (Celery monitoring)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_flower
+    command: celery -A app.services.background_tasks flower --port=5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    networks:
+      - rag_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  rag_network:
+    driver: bridge
