@@ -1,6 +1,19 @@
 # RAG Platform
 
-A production-ready Retrieval Augmented Generation (RAG) platform built with FastAPI, featuring advanced AI capabilities for document processing, semantic search, and intelligent chat interactions.
+<div align="center">
+
+![RAG Platform](https://img.shields.io/badge/RAG-Platform-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-green)
+![Python](https://img.shields.io/badge/Python-3.11+-blue)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+**A production-ready Retrieval Augmented Generation (RAG) platform built with FastAPI, featuring advanced AI capabilities for document processing, semantic search, and intelligent chat interactions.**
+
+[🚀 Live Demo](https://rag-platform-backend-e4jz.onrender.com/docs) •
+[📖 API Documentation](https://rag-platform-backend-e4jz.onrender.com/docs) •
+[🔗 GitHub Repository](https://github.com/shadow780915551-hash/rag-platform-backend)
+
+</div>
 
 ## Features
 
@@ -87,20 +100,28 @@ rag-platform/
 - **GitHub Actions**: CI/CD pipeline
 - **Render**: Cloud deployment option
 
-## Installation
+## Quick Start
 
-### Prerequisites
+### Try the Live Demo
+1. Visit the [Live API Documentation](https://rag-platform-backend-e4jz.onrender.com/docs)
+2. Register a new user account
+3. Upload a PDF document
+4. Start chatting with your documents!
+
+### Local Development
+
+#### Prerequisites
 - Python 3.11+
 - PostgreSQL (optional, for production)
 - Redis (for Celery)
 - Docker and Docker Compose (for containerized deployment)
 
-### Local Development Setup
+#### Installation Steps
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/rag-platform.git
-cd rag-platform
+git clone https://github.com/shadow780915551-hash/rag-platform-backend.git
+cd rag-platform-backend
 ```
 
 2. **Create virtual environment**
@@ -137,6 +158,7 @@ uvicorn app.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
+
 ### Docker Deployment
 
 1. **Build and run with Docker Compose**
@@ -154,8 +176,42 @@ docker-compose logs -f
 docker-compose down
 ```
 
+## Project Status
+
+<div align="center">
+
+![Production Ready](https://img.shields.io/badge/Status-Production--Ready-brightgreen)
+![Deployed](https://img.shields.io/badge/Deployed-Render-blue)
+![API](https://img.shields.io/badge/API-RESTful-orange)
+
+**✅ Fully deployed and operational on Render**
+
+</div>
+
+## Key Highlights
+
+### 🎯 Production-Ready Features
+- **Scalable Architecture**: Built with FastAPI for high-performance async operations
+- **Enterprise Security**: JWT authentication with role-based access control
+- **Advanced AI**: State-of-the-art semantic search with re-ranking
+- **Real-time Processing**: Background task processing with Celery
+- **Comprehensive Logging**: Structured logging with Loguru
+- **API Documentation**: Auto-generated interactive Swagger UI
+
+### 🚀 Deployment
+- **Live Instance**: Deployed on Render cloud platform
+- **Auto-scaling**: Automatically handles traffic spikes
+- **Database**: PostgreSQL for production-grade data persistence
+- **Monitoring**: Built-in health checks and admin dashboard
+
 ## API Documentation
 
+### Live Demo
+- **🚀 Production API**: [https://rag-platform-backend-e4jz.onrender.com/docs](https://rag-platform-backend-e4jz.onrender.com/docs)
+- **📖 Swagger UI**: [https://rag-platform-backend-e4jz.onrender.com/docs](https://rag-platform-backend-e4jz.onrender.com/docs)
+- **📚 ReDoc**: [https://rag-platform-backend-e4jz.onrender.com/redoc](https://rag-platform-backend-e4jz.onrender.com/redoc)
+
+### Local Development
 Once the application is running, visit:
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
