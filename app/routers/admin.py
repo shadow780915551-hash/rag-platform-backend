@@ -7,7 +7,7 @@ This module handles admin dashboard endpoints for system management.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from typing import List, Dict
+from typing import List, Dict, Optional
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 
