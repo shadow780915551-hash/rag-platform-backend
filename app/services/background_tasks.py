@@ -89,7 +89,7 @@ def process_document_task(self, document_id: int, file_path: str):
                 chunk_text=chunk["text"],
                 page_number=chunk["page_number"],
                 chunk_index=chunk["chunk_index"],
-                metadata=str(chunk)
+                chunk_metadata=str(chunk)
             )
             chunk_records.append(chunk_record)
         

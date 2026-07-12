@@ -21,7 +21,7 @@ class DocumentChunk(Base):
         page_number: Page number in the original document
         chunk_index: Index of the chunk in the document
         embedding_vector: Vector embedding (stored as text/binary)
-        metadata: Additional metadata as JSON
+        chunk_metadata: Additional metadata as JSON
         created_at: Creation timestamp
     """
     
@@ -33,7 +33,7 @@ class DocumentChunk(Base):
     page_number = Column(Integer, default=0)
     chunk_index = Column(Integer, default=0)
     embedding_vector = Column(Text)  # Store as serialized text
-    metadata = Column(Text)  # Store as JSON string
+    chunk_metadata = Column(Text)  # Store as JSON string
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
